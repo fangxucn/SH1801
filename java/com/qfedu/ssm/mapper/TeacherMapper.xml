@@ -1,0 +1,33 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.qfedu.ssm.mapper.TeacherMapper">
+    <!-- sql定义语句片段-->
+    <sql id="tableName">teacher</sql>
+    <insert id="insert" parameterType="Teacher" useGeneratedKeys="true" keyProperty="id">
+        insert into
+        <include refid="tableName"/>
+        (name) values(#{name})
+    </insert>
+    <resultMap id="teacherResultMap" type="Teacher">
+        <id property="id" column="t_id"/>
+        <result property="name" column="t_name"/>
+        <!-- 有一些的对象逻辑 -->
+        <collection property="courses" column="c_tid" javaType="ArrayList" ofType="Course">
+            <id property="id" column="c_id"/>
+            <result property="name" column="c_name"/>
+            <result property="tid" column="c_tid"/>
+            <!--有一个？-->
+            <association property="teacher" resultMap="teacherResultMap"/>
+        </collection>
+    </resultMap>
+
+    <select id="selectTeacher" parameterType="int" resultMap="teacherResultMap">
+    select t.id t_id,t.name t_name,c.id c_id ,c.name c_name,c.tid c_tid
+    from teacher t,course c
+    where t.id=c.tid and t.id=#{id}
+  </select>
+
+
+</mapper>

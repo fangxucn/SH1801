@@ -1,0 +1,67 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.qfedu.ssm.mapper.StudentMapper">
+    <sql id="studentColumn">student.id s_id,student.name s_name,student.sex s_sex,student.age s_age</sql>
+    <sql id="courseColumn">course.id c_id,course.name c_name,course.tid c_tid</sql>
+    <sql id="scoreColumn">score.sid score_sid,score.cid score_cid,score.score score_score</sql>
+    <sql id="teacherColumn">teacher.id t_id,teacher.name t_name</sql>
+
+    <resultMap type="Student" id="studentResultMap">
+        <id property="id" column="s_id"/>
+        <result property="name" column="s_name"/>
+        <result property="age" column="s_age"/>
+        <result property="sex" column="s_sex"/>
+        <!-- 有一些成绩 -->
+        <collection property="scores" javaType="ArrayList" ofType="Score">
+            <id property="sid" column="score_sid"/>
+            <id property="cid" column="score_cid"/>
+            <result property="score" column="score_score"/>
+            <!--有一个课程-->
+            <association property="course" javaType="Course">
+                <id property="id" column="c_id"/>
+                <result property="name" column="c_name"/>
+                <result property="tid" column="c_tid"/>
+                <!--有一个老师-->
+                <association property="teacher" javaType="Teacher">
+                    <id property="id" column="t_id"/>
+                    <result property="name" column="t_name"/>
+                </association>
+            </association>
+
+        </collection>
+    </resultMap>
+
+
+    <select id="selectStudent" parameterType="int" resultMap="studentResultMap">
+        select
+        <include refid="studentColumn"/>
+        ,
+        <include refid="scoreColumn"/>
+        ,
+        <include refid="courseColumn"/>
+        ,
+        <include refid="teacherColumn"/>
+        from student,score,course,teacher
+        where student.id=score.sid and score.cid=course.id and course.tid=teacher.id
+        and student.id=#{id}
+    </select>
+
+
+    <select id="findStudentPage" resultType="Student">
+        select id,name,age,sex
+        from student
+        limit #{start},#{size}
+    </select>
+
+
+
+    <select id="findStudentCount" resultType="java.lang.Long">
+      select count(id) from student
+
+    </select>
+
+
+
+</mapper>

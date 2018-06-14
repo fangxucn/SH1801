@@ -1,0 +1,64 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.qfedu.ssm.mapper.CourseMapper">
+    <sql id="courseColumn">c.id c_id,c.name c_name,c.tid c_tid</sql>
+    <sql id="teacherColumn">t.id t_id,t.name t_name</sql>
+    <sql id="courseTable">course c</sql>
+    <sql id="teacherTable">teacher t</sql>
+    <!--定义结果映射-->
+    <!-- resultMap：id  是表示主键，property是类的成员名，column是结果集的字段名-->
+    <!-- resultMap：result  是表示普通字段，也是property是类的成员名，column是结果集的字段名-->
+    <resultMap id="courseResultMap" type="Course">
+        <id property="id" column="c_id"/>
+        <result property="name" column="c_name"/>
+        <result property="tid" column="c_tid"/>
+        <!-- 表达有一个的逻辑 -->
+        <association property="teacher" javaType="Teacher" column="c_tid">
+            <id property="id" column="t_id"/>
+            <result property="name" column="t_name"/>
+        </association>
+    </resultMap>
+
+    <!-- 这个select查询的结果有：c_id,c_name,c_tid,t_id,t_name -->
+    <select id="selectCourse" resultMap="courseResultMap" parameterType="int">
+        select
+        <include refid="courseColumn"/>
+        ,
+        <include refid="teacherColumn"/>
+        from
+        <include refid="courseTable"/>
+        ,
+        <include refid="teacherTable"/>
+        where c.tid=t.id and c.id=#{id}
+    </select>
+
+
+
+
+    <!--将一个查询分成多个-->
+    <resultMap id="courseResultMap2" type="Course">
+        <id property="id" column="c_id"/>
+        <result property="name" column="c_name"/>
+        <result property="tid" column="c_tid"/>
+        <!--有一个老师-->
+        <association property="teacher" column="c_tid" select="selectTeacherById">
+        </association>
+    </resultMap>
+
+
+
+
+    <select id="selectCourse2" parameterType="int" resultMap="courseResultMap2">
+      select
+      c.id c_id,c.name c_name,c.tid c_tid
+      from course c
+      where c.id=#{id}
+    </select>
+    <select id="selectTeacherById" parameterType="int" resultType="Teacher">
+      select id,name from teacher where id=#{id}
+
+    </select>
+
+</mapper>
