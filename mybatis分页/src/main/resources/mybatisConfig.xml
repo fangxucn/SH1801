@@ -1,0 +1,41 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE configuration
+        PUBLIC "-//mybatis.org//DTD Config 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-config.dtd">
+<configuration>
+
+<properties resource="db.properties"/>
+    <settings>
+        <!--全局性设置懒加载，如果设置为false，所有相关的属性都会被初始化的时候加载，默认也就是false-->
+        <setting name="lazyLoadingEnabled" value="true"/>
+        <!--当设置为true，懒加载对象可能被任何懒加载属性全部加载，否则，所有属性按需加载 -->
+        <setting name="aggressiveLazyLoading" value="false"/>
+        <!-- 二级缓存总开关  打开-->
+        <setting name="cacheEnabled" value="true"/>
+    </settings>
+    
+    <typeAliases>
+        <package name="com.qfedu.mybatis.pojo"/>
+
+    </typeAliases>
+<!-- 配置mybatis的环境信息 -->
+    <environments default="development">
+        <environment id="development">
+            <!--  配置JDBC事务控制，由mybatis进行管理 -->
+            <transactionManager type="JDBC"></transactionManager>
+            <!-- 配置数据源 -->
+            <dataSource type="POOLED">
+                <property name="driver" value="${jdbc.driver}"/>
+                <property name="url" value="${jdbc.url}"/>
+                <property name="username" value="${jdbc.username}"/>
+                <property name="password" value="${jdbc.password}"/>
+            </dataSource>
+        </environment>
+    </environments>
+
+    <mappers>
+
+
+    </mappers>
+
+</configuration>
