@@ -1,0 +1,52 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.qfedu.ssm.mapper.StudentMapper">
+
+    <insert id="insertIntoStudent" parameterType="Student">
+
+
+        <selectKey keyProperty="id" resultType="int" order="AFTER">
+            select last_insert_id();
+        </selectKey>
+        insert into student (name,gender,password)
+        values(#{name},#{gender},#{password})
+    </insert>
+
+    <select id="selectStudentByNameAndPassword"   resultType="Student">
+      select * from student where name=#{name} and password=#{password}
+    </select>
+
+    <select id="selectName" parameterType="java.lang.String"  resultType="Student">
+         select * from student where name=#{name}
+    </select>
+    <select id="selectById" parameterType="int"  resultType="Student">
+         select * from student where id=#{id}
+    </select>
+
+    <!--<update id="updateStudent" parameterType="Student">-->
+      <!--update student set-->
+      <!--paper=#{paper}-->
+      <!--where id=#{id}-->
+    <!--</update>-->
+
+    <select id="findStudentPage" resultType="Student">
+        select *
+        from student
+        limit #{start},#{size}
+    </select>
+
+
+    <select id="findStudentCount" resultType="java.lang.Long">
+      select count(id) from student
+
+    </select>
+
+    <delete id="deleteStudent" parameterType="int">
+        delete from student where id=#{id}
+    </delete>
+
+
+</mapper>

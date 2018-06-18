@@ -1,0 +1,44 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.qfedu.ssm.mapper.QuestionMapper">
+    <select id="findQuestionPageCount10" resultType="Question">
+       select * from question order by rand() limit 0,10;
+    </select>
+
+
+    <select id="findQuestionPage" resultType="Question">
+        select id,subject,answer
+        from question
+        limit #{start},#{size}
+    </select>
+
+
+    <select id="findQuestionCount" resultType="java.lang.Long">
+      select count(id) from question
+
+    </select>
+
+
+    <insert id="insertIntoQuestion" parameterType="Question">
+        <selectKey keyProperty="id" resultType="int" order="AFTER">
+            select last_insert_id();
+        </selectKey>
+        insert into question(subject,answer)
+        values(#{subject},#{answer})
+    </insert>
+
+    <update id="updateQuestion" parameterType="Question">
+      update question set
+      subject=#{subject},answer=#{answer}
+      where id=#{id}
+    </update>
+
+    <delete id="deleteQuestion" parameterType="int">
+        delete from question where id=#{id}
+    </delete>
+
+
+</mapper>
